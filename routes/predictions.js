@@ -9,17 +9,26 @@ var configure = function(utils) {
 
     function getPredictions (req, res) {
         if (utils.flags.indexOf('-dev') === -1) {
-            var stop = 5955; //req.params.stop;
-            var route = 'RED'; //req.params.route;
+            var stop = req.params.stop;
+            var route = req.params.route;
 
             http.get(api + '&rt=' + route + '&stpid=' + stop, function(response) {
                 response.setEncoding('utf8');
+                var data = '';
+                response.on('readable', function(){
+                	var chunk;
 
-                response.on('data', function(data) {
-                    data = JSON.parse(data);
-                    times = calculateTimes(data);
-                    console.log('YOU DIDNT PASS IN -DEV')
-                    res.send(times);
+                	while(null !== (chunk = response.read())) {
+                		data += chunk;
+                	}
+
+                	data = JSON.parse(data);
+                	if(!data['bustime-response']['prd'].length) {
+                		res.send('No data available');
+                	}else{
+                        times = calculateTimes(data);
+                        res.send(times);
+                    }
                 });
 
             }).on('error', function(error) {
