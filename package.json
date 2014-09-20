@@ -1,0 +1,20 @@
+{
+    "name": "BusTickerServer",
+    "description": "Server for bus ticker data",
+    "version": "0.0.5",
+    "private": true,
+    /*"scripts": {
+        "start": "node ./website/app.js"
+    },*/
+    /*"config": {
+        "port": "3000"
+    },*/
+    "dependencies": {
+        "express": "~4.1.0",
+        //"ejs": "~1.0.0",
+        //"pg": "~3.0.3",
+        //"xml2js": "~0.4.2",
+        //"static-favicon": "1.x",
+        "morgan": "1.x"
+    }
+}
