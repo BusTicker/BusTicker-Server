@@ -11,7 +11,7 @@ app.use(logger('dev'));
 
 // Bring in external routes
 var routes = require(__dirname + '/routes');
-//app.use('/', routes);
+app.use('/', routes);
 
 
 console.log("Go go gadget server.");
