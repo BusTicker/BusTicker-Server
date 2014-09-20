@@ -4,13 +4,13 @@ var app = express();
 
 // Configure app properties
 app.set('port', process.env.PORT || process.env.npm_package_config_port || 3000);
-var utils = require(__dirname+'/utilities/utils'); // later this will hold important stuff that our modules need
+var utils = require(__dirname + '/utilities/utils'); // later this will hold important stuff that our modules need
 
 utils.flags = [];
 process.argv.forEach(function(value, index, array) {
-	if(index > 1){ // ignores node file.js
-		utils.flags.push(value);
-	}
+    if (index > 1) { // ignores node file.js
+        utils.flags.push(value);
+    }
 });
 
 
