@@ -38,30 +38,45 @@ routes.forEach(function (route, index, array) {
 var routes = all_rt_dirs.rt_dir_array;
 var stopsArray = {};
 var responsesReceived = 0;
+var stopsFound = [];
 routes.forEach(function (route, index, array) {
   var stop = {};
-  http.get("http://realtime.ridemcts.com/bustime/api/v2/getstops?key=##TAYLORSKEY##&format=json&rt="+route.rt+"&dir="+route.dir, function(res) {
+  http.get("http://realtime.ridemcts.com/bustime/api/v2/getstops?key=kYrUtJxDYxBhRx2AYwEbeYQj4&format=json&rt="+route.rt+"&dir="+route.dir, function(res) {
     //console.log("Got response: " + res.statusCode);
     res.setEncoding("utf8");
     res.on('data', function(chunk) {
       data = JSON.parse(chunk)["bustime-response"].stops;
       for(i = 0; i<data.length; i++) {
-        if(stopsArray[data[i].stpid] != null) {
+        routes_served = [];
+        current_stop = data[i].stpid
+        if(stopsArray[current_stop] != null) {
+
+          if (!stopsArray[current_stop].routes_served) {
+            //console.log("MISMATCH! stopid conflict found but no routes_served");
+            //console.log(data[i]);
+          }
+          stopsArray[current_stop].routes_served.push(route.rt+route.dir);
+          //console.log("NOTE: Added route "+route.rt+route.dir+" to stop "+data[i].stpid);
           //console.log("Found duplicate stop: "+data[i].stpid);
+          if (data[i].stpnm != stopsArray[data[i].stpid].stpnm) {
+            //console.log("MISMATCH! "+data[i].stpnm +"!="+ stopsArray[data[i].stpid].stpnm);
+          }
         } else {
-          data[i].rt = route.rt;
-          data[i].dir = route.dir;
-          data[i].routedir = route.rt + route.dir;
+          routes_served[0] =  route.rt + route.dir;
+          data[i].routes_served = routes_served;
           stopsArray[data[i].stpid] = data[i];
-          console.log(data[i])
+          stopsFound.push(current_stop);
+          //console.log(data[i])
         }
       }
       responsesReceived ++;
       if (responsesReceived % 1 == 0) {
-        //console.log("Rec'd "+responsesReceived+" responses.");
+        console.log("Rec'd "+responsesReceived+" responses.");
       }
       if (responsesReceived == 70) {
-        //console.log("Done?"); // probably done
+        for (i =0; i<stopsFound.length; i++) {
+          console.log(stopsArray[stopsFound[i]]);
+        }
       }
     });
   }).on('error', function(e) {

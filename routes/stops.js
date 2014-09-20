@@ -3,12 +3,13 @@ var configure = function(utils) {
   var express = require('express');
   var router = express.Router();
 
-  function getMockData(res) {
-    var mockData = require("sample data/dummy_stops.json");
+  function jsonMockData(req, res) {
+    var mockData = require(__dirname+"/sample data/dummy_stops.json");
     res.json(mockData);
   }
 
-  router.get('/',function(req,res) {res.send("STOPS");});
+  router.get('/',jsonMockData);
+  router.get('/:anything',jsonMockData);
   return router;
 }
 
