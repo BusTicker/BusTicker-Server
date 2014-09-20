@@ -5,6 +5,8 @@ var app = express();
 // Configure app properties
 app.set('port', process.env.PORT || process.env.npm_package_config_port || 3000);
 var utils = require(__dirname + '/utilities/utils'); // later this will hold important stuff that our modules need
+utils.key = '6btCBLEDDeH6iHJnRbyhKHf4T'; // API key
+utils.api = 'http://realtime.ridemcts.com/bustime/api/v2'; // base url for the api
 
 utils.flags = [];
 process.argv.forEach(function(value, index, array) {

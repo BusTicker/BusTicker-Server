@@ -4,15 +4,12 @@ var configure = function(utils) {
     var http = require('http');
     var router = express.Router();
 
-    var key = '6btCBLEDDeH6iHJnRbyhKHf4T';
-    var api = 'http://realtime.ridemcts.com/bustime/api/v2/getpredictions?key=' + key + '&format=json';
-
     function getPredictions(req, res) {
         if (utils.flags.indexOf('-dev') === -1) {
             var stop = req.params.stop;
             var route = req.params.route;
 
-            http.get(api + '&rt=' + route + '&stpid=' + stop, function(response) {
+            http.get(utils.api + '/getpredictions?key=' + utils.key + '&format=json' + '&rt=' + route + '&stpid=' + stop, function(response) {
                 response.setEncoding('utf8');
                 var data = '';
                 response.on('readable', function() {
@@ -23,7 +20,7 @@ var configure = function(utils) {
                     }
 
                     data = JSON.parse(data);
-                    if (!data['bustime-response']['prd'].length) {
+                    if (data['bustime-response']['prd'] === undefined) {
                         res.send('No data available');
                     } else {
                         times = calculateTimes(data);
@@ -39,10 +36,6 @@ var configure = function(utils) {
             var dummyTimes = [7, 16];
             res.send(dummyTimes);
         }
-
-
-        res.send('Request over');
-
     }
     router.get('/', getPredictions);
     router.get('/:stop/:route', getPredictions);
