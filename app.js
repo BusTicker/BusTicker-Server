@@ -11,7 +11,7 @@ app.use(logger('dev'));
 
 // Bring in external routes
 var routes = require(__dirname + '/routes');
-app.use('/', routes);
+app.use('/', routes).configure();
 
 
 console.log("Go go gadget server.");
@@ -20,4 +20,3 @@ console.log("Go go gadget server.");
 var server = app.listen(app.get('port'), function() {
     console.log('Listening on port %d', server.address().port);
 });
-
