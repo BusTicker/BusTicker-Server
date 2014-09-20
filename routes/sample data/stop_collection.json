@@ -30,7 +30,7 @@
     "routedir": "GRESOUTH" },
   { "stpid": "1416",
     "stpnm": "BRADY + ARLINGTON",
- -   "lat": 43.052979643604,
+    "lat": 43.052979643604,
     "lon": -87.895343697752,
     "rt": "GRE",
     "dir": "SOUTH",
