@@ -5,6 +5,7 @@
     "private": true,
     "dependencies": {
         "express": "~4.9.0",
-        "morgan": "1.x"
+        "morgan": "1.x",
+        "promise": "6.0.0"
     }
 }
