@@ -1,6 +1,9 @@
 var utilities = {};
 
-// Converter to adjust MCTS API dates to a more stnadard format. We should use a library for this soon though.
+utilities.key = '6btCBLEDDeH6iHJnRbyhKHf4T'; // API key
+utilities.api = 'http://realtime.ridemcts.com/bustime/api/v2'; // base url for the api
+
+// Converter to adjust MCTS API dates to a more standard format. We should use a library for this soon though.
 utilities.toDate = function(timeStr) {
     var time = new Date(timeStr.substring(0, 4) + "-" + timeStr.substring(4, 6) + "-" + timeStr.substring(6, 8) + " " + timeStr.substring(10, 15));
     return Date.parse(time);
