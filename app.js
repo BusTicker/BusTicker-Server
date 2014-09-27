@@ -1,11 +1,10 @@
 // Expresssss
 var express = require('express');
-var Promise = require('promise');
+var utils = require('./utils');
 var app = express();
 
 // Configure app properties
 app.set('port', process.env.PORT || process.env.npm_package_config_port || 3000);
-var utils = require(__dirname + '/utilities/utils');
 
 utils.flags = [];
 process.argv.forEach(function(value, index, array) {
@@ -17,9 +16,9 @@ process.argv.forEach(function(value, index, array) {
 // Instantiate route provider
 var Provider;
 if (utils.flags.indexOf('-dev') == -1) {
-    Provider = require('./MctsProvider');
+    Provider = require('./mctsProvider');
 } else {
-    Provider = require('./MockProvider');
+    Provider = require('./mockProvider');
 }
 
 // Start logger
@@ -28,66 +27,23 @@ app.use(logger('dev'));
 
 // Create routes
 app.get('/predictions', function(req, res) {
-    var route = req.query.route;
-    var stop = req.query.stop;
-
-    var promise = new Promise(function(resolve, reject) {
-        if (route && stop) {
-        	var data = Provider.getPredictions();
-            resolve(data);
-        } else {
-            reject("Bad request. Make sure you have a route and a stop ID on the query string.");
-        }
-    });
-
-    promise.then(function(data) {
-    	var response = {
-    		'success': true,
-    		'message': 'OK',
-    		'data': data
-    	};
-        res.send(response);
-    }, function(error) {
-    	var response = {
-    		'success': false,
-    		'message': error,
-    		'data': {}
-    	};
-        res.send(response);
-    });
+	Provider.getPredictions(req).then(function(response) {
+		console.log('success: ' + response);
+		res.send(response);
+	}, function(response) {
+		console.log('fail: ' + response);
+		res.send(response);
+	});
 });
 
 app.get('/stops', function(req, res) {
-	var lat = req.query.lat;
-	var lon = req.query.lon;
-	var radius = req.query.radius;
-	var page = req.query.page || 1;
-	var pageSize = req.query.pageSize || 20;
-
-	var promise = new Promise(function(resolve, reject) {
-        if (lat && lon && radius) {
-        	var data = Provider.getStops();
-            resolve(data);
-        } else {
-            reject("Bad request. Make sure you have a latitude, longitude and radius on the query string.");
-        }
-    });
-
-    promise.then(function(data) {
-    	var response = {
-    		'success': true,
-    		'message': 'OK',
-    		'data': data
-    	};
-        res.send(response);
-    }, function(error) {
-    	var response = {
-    		'success': false,
-    		'message': error,
-    		'data': {}
-    	};
-        res.send(response);
-    });
+    Provider.getStops(req).then(function(response) {
+		console.log('success: ' + response);
+		res.send(response);
+	}, function(response) {
+		console.log('fail: ' + response);
+		res.send(response);
+	});
 });
 
 // Launch the server
