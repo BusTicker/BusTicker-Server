@@ -1,11 +1,26 @@
 {
-    "name": "BusTickerServer",
-    "description": "Server for bus ticker data",
-    "version": "0.0.5",
-    "private": true,
-    "dependencies": {
-        "express": "~4.9.0",
-        "morgan": "1.x",
-        "promise": "6.0.0"
+  "name": "BusTickerServer",
+  "description": "Server for bus ticker data",
+  "version": "0.0.6",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
     }
+  ],
+  "dependencies": {
+    "express": "~4.9.0",
+    "morgan": "1.x",
+    "promise": "6.0.0",
+    "rest": "^1.2.0",
+    "when": "^3.4.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BusTicker/BusTickr-Server.git"
+  }
 }
