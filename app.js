@@ -14,6 +14,7 @@ process.argv.forEach(function(value, index, array) {
     console.log("flag: " + value);
 });
 
+
 // Set up bustime service
 var when = require('when');
 var bt = require('./bustime');
@@ -28,7 +29,6 @@ bt.loadData().then(function(data) {
 });
 
 
-
 // Instantiate route provider
 var Provider;
 if (utils.flags.indexOf('-dev') == -1) {
@@ -37,9 +37,11 @@ if (utils.flags.indexOf('-dev') == -1) {
     Provider = require('./mockProvider');
 }
 
-// Start logger
+
+// Start request logger
 var logger = require('morgan');
 app.use(logger('dev'));
+
 
 // Create routes
 app.get('/predictions', function(req, res) {
@@ -61,6 +63,7 @@ app.get('/stops', function(req, res) {
 		res.send(response);
 	});
 });
+
 
 // Launch the server
 var server = app.listen(app.get('port'), function() {
