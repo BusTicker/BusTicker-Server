@@ -82,13 +82,16 @@ var setApiKey = function(key) {
     apiKey = key;
 };
 
-var processArguments = function() {
-    process.argv.forEach(function (argument, index, array) {
+var processArguments = function(flags) {
+    if (flags == null) {
+      flags = process.argv
+    }
+    flags.forEach(function (argument, index, array) {
         if (argument.indexOf('--mode=') !== -1) {
             var mode = argument.substring(7);
             setMode(mode);
         }
-        
+
         if (argument.indexOf('--apikey=') !== -1) {
             var apiKey = argument.substring(9);
             setApiKey(apiKey);
@@ -145,11 +148,11 @@ var fetchStops = function(route, direction) {
             for (var i=0;i<response.stops.length;i++) {
                 var stop = response.stops[i];
                 var myStop =  {
-                    'id' : stop.stpid, 
-                    'name' : stop.stpnm, 
-                    'latitude' : stop.lat, 
-                    'longitude' : stop.lon, 
-                    'routeId' : route.id, 
+                    'id' : stop.stpid,
+                    'name' : stop.stpnm,
+                    'latitude' : stop.lat,
+                    'longitude' : stop.lon,
+                    'routeId' : route.id,
                     'direction' : direction
                 };
                 stops.push(myStop);
@@ -231,7 +234,7 @@ var organizeData = function(routes) {
                 'color' : routes[i].color
             };
         }
-        
+
         for (var j=0;j<routes[i].stops.length;j++) {
             var stop = routes[i].stops[j];
             if (stopsHash[stop.id] === undefined) {
@@ -248,7 +251,7 @@ var organizeData = function(routes) {
 
     var lastUpdate = new Date().toISOString();
     var data = {'routes' : routesHash, 'stops' : stopsHash, 'lastUpdate' : lastUpdate};
-    
+
     return data;
 };
 
@@ -260,7 +263,7 @@ var gatherAllData = function() {
     if (apiKey === '') {
         return when.reject('API Key must be defined');
     }
-    
+
     return fetchRoutes().then(gatherDirections).then(gatherStops).then(function(routes) {
         return when.resolve(organizeData(routes));
     });
@@ -301,7 +304,7 @@ var loadData = function() {
             return when.resolve(database);
         }
     }
-    
+
     return loadFileData().then(function(data) {
         if (data) {
             return when.resolve(data);
