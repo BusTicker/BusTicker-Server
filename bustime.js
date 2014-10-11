@@ -264,7 +264,7 @@ var gatherAllData = function() {
         return when.reject('API Key must be defined');
     }
 
-    return gatherDirections()).then(gatherStops).then(function(routes) {
+    return gatherDirections().then(gatherStops).then(function(routes) {
         return when.resolve(organizeData(routes));
     });
 };
