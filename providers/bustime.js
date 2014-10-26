@@ -1,6 +1,7 @@
 var when = require('when');
 var rest = require('rest');
 var fs = require('fs');
+var haversine = require('haversine');
 
 //// Utility Methods ////
 
@@ -66,42 +67,27 @@ exports.isDateAfterMinutesAgo = isDateAfterMinutesAgo;
 
 //// API Configuration ////
 
-var mode = '';
-var baseUrl = '';
-var apiKey = '';
+var provider = 'mcts'; // default
+var baseUrl = 'http://realtime.ridemcts.com/bustime/api/v2/'; // default
+var apiKey = ''; // no default (developer must provide their own key)
 
-var setMode = function(m) {
-    mode = m;
+var setProvider = function(p) {
+    provider = p;
 };
 
 var setBaseUrl = function(url) {
-    baseUrl = url;
+    if (url.length > 0) {
+        baseUrl = url;
+    }
 };
 
 var setApiKey = function(key) {
     apiKey = key;
 };
 
-var processArguments = function(flags) {
-    if (flags == null) {
-      flags = process.argv
-    }
-    flags.forEach(function (argument, index, array) {
-        if (argument.indexOf('--mode=') !== -1) {
-            var mode = argument.substring(7);
-            setMode(mode);
-        }
-
-        if (argument.indexOf('--apikey=') !== -1) {
-            var apiKey = argument.substring(9);
-            setApiKey(apiKey);
-        }
-    });
-};
-
+exports.setProvider = setProvider;
 exports.setBaseUrl = setBaseUrl;
 exports.setApiKey = setApiKey;
-exports.processArguments = processArguments;
 
 //// API Calls ////
 
@@ -163,9 +149,9 @@ var fetchStops = function(route, direction) {
     });
 };
 
-var fetchPredictions = function(route, direction, stop) {
+var fetchPredictions = function(route, stop) {
     var url = baseUrl + 'getpredictions';
-    var params = {'key' : apiKey, 'format' : 'json', 'rt' : route.id, 'dir' : direction, 'stpid' : stop.id};
+    var params = {'key' : apiKey, 'format' : 'json', 'rt' : route, 'stpid' : stop};
 
     return fetchBusTimeResponse(url, params).then(function(response) {
         return when.promise(function(resolve, reject) {
@@ -181,6 +167,74 @@ var fetchPredictions = function(route, direction, stop) {
 };
 
 exports.fetchPredictions = fetchPredictions;
+
+//// Bounding Box ////
+
+var getBoundingBox = function(latitude, longitude, radKm) {
+    var toRadian = function(degree) {
+        return degree * Math.PI / 180;
+    };
+
+    var toDegree = function(radian) {
+        return radian * 180 / Math.PI;
+    };
+    
+    var fromRadians = function(latitude, longitude) {
+        var degLat = latitude * 180 / Math.PI, // degrees = radians * (180/pi)
+        degLon = longitude * 180 / Math.PI; // degrees = radians * (180/pi)
+
+        return [degLon, degLat];
+    };
+    
+    var earthRadius = 6371.01;
+    var radLat = toRadian(latitude);
+    var radLon = toRadian(longitude);
+    
+    var MIN_LAT = toRadian(-90);  // -PI/2
+    var MAX_LAT = toRadian(90);   //  PI/2
+    var MIN_LON = toRadian(-180); // -PI
+    var MAX_LON = toRadian(180);
+    
+    var radDist = radKm / earthRadius,
+    minLat = radLat - radDist,
+    maxLat = radLat + radDist,
+    minLon,
+    maxLon;
+
+    if (minLat > MIN_LAT && maxLat < MAX_LAT) {
+        var deltaLon = Math.asin(Math.sin(radDist) /
+            Math.cos(radLat));
+            minLon = radLon - deltaLon;
+        if (minLon < MIN_LON) {
+            minLon += 2 * Math.PI;
+        }
+        maxLon = radLon + deltaLon;
+        if (maxLon > MAX_LON) {
+            maxLon -= 2 * Math.PI;
+        }
+    }
+    else {
+        // a pole is within the distance
+        minLat = Math.max(minLat, MIN_LAT);
+        maxLat = Math.min(maxLat, MAX_LAT);
+        minLon = MIN_LON;
+        maxLon = MAX_LON;
+    }
+    
+    var lowerLeft = fromRadians(minLat, minLon);
+    var upperRight = fromRadians(maxLat, maxLon);
+    
+    return [lowerLeft[0], lowerLeft[1], upperRight[0], upperRight[1]].toString();
+};
+
+var isInBoundingBox = function(latitude, longitude, box) {
+    // TODO: needs to be implemented (see npmjs.org for module on bbox)
+    // Note: using the bounding box cuts down on using the haversine function on every location
+    return true;
+};
+
+exports.boundingBox = getBoundingBox;
+exports.isInBoundingBox = isInBoundingBox;
 
 //// Loading Routines ////
 
@@ -324,3 +378,25 @@ var loadData = function() {
 };
 
 exports.loadData = loadData;
+
+var lookupStops = function(latitude, longitude, radius) {
+    var box = getBoundingBox(latitude, longitude, radius);
+    var location = { latitude: latitude, longitude: longitude };
+    var matches = [];
+    var stops = database.stops;
+    var keys = Object.keys(stops);
+    for (var s=0;s<keys.length;s++) {
+        var stop = stops[keys[s]];
+        if (isInBoundingBox(stop.latitude, stop.longitude, box)) {
+            var distance = haversine(location, stop);
+            // Note: distance is kilometers
+            if (distance < radius) {
+                matches.push(stop);
+            }
+        }
+    }
+    
+    return when.resolve(matches);
+};
+
+exports.lookupStops = lookupStops;

@@ -1,4 +1,4 @@
-{"stops": [
+[
   { "stpid": "1423",
     "stpnm": "WATER STREET + CHERRY",
     "lat": 43.048143871458,
@@ -76,4 +76,4 @@
     "rt": "57",
     "dir": "WEST",
     "routedir": "57WEST" }
-]}
+]

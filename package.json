@@ -13,10 +13,12 @@
     }
   ],
   "dependencies": {
+    "argparse": "^0.1.15",
     "express": "^4.9.0",
+    "haversine": "^1.0.0",
     "morgan": "1.x",
-    "promise": "6.0.0",
     "rest": "^1.2.0",
+    "tap": "^0.4.13",
     "when": "^3.4.6"
   },
   "devDependencies": {
