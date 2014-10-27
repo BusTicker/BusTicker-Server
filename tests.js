@@ -29,16 +29,6 @@ provider.processArgs(args);
 
 // TODO: add tests for bustime.js for bounding box and distance functions
 
-test("Load data", function (t) {
-    provider.prepareData().then(function() {
-        t.ok(true, "Data was loaded");
-        t.end();
-    }, function(error) {
-        t.ok(false, "Data was not loaded");
-        t.end();
-    });
-});
-
 test("Get stops", function (t) {
     provider.getStops({
         query : {
@@ -90,4 +80,22 @@ test("Get predictions", function (t) {
         t.ok(false, "Predictions were not loaded");
         t.end();
     });
+});
+
+test("Subsets", function (t) {
+    var util = require('./providers/util');
+    
+    var items = [1,2,3,4,5,6,7,8,9,10,11,12];
+    var subset1 = util.getSubset(items, 1, 5);
+    var subset2 = util.getSubset(items, 2, 5);
+    var subset3 = util.getSubset(items, 3, 5);
+    var subset4 = util.getSubset(items, 2, 10);
+    var subset5 = util.getSubset([], 1, 10);
+    
+    t.ok(subset1 && subset1.length === 5, "Subset must have 5 items");
+    t.ok(subset2 && subset2.length === 5, "Subset must have 5 items");
+    t.ok(subset3 && subset3.length === 2, "Subset must have 2 items");
+    t.ok(subset4 && subset4.length === 2, "Subset must have 2 items");
+    t.ok(subset5 && subset5.length === 0, "Subset must have 0 items");
+    t.end();
 });

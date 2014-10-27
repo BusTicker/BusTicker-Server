@@ -1,27 +1,28 @@
 
 var when = require('when');
+var util = require('./util');
 
-exports.processArgs = function(args) {
+var processArgs = function(args) {
     // do nothing
 };
 
-exports.prepareData = function() {
-    return when.resolve();
-};
+exports.processArgs = processArgs;
 
-exports.getStops = function(req) {
+var getStops = function(req) {
     var lat = req.query.lat;
     var lon = req.query.lon;
     var radius = req.query.radius;
-    var page = req.query.page || 1;
-    var pageSize = req.query.pageSize || 20;
+    var page = parseInt(req.query.page, 10) || 1;
+    var pageSize = parseInt(req.query.pageSize, 10) || 20;
 
     return when.promise(function(resolve, reject) {
+        var stops = require('./mockdata/stops.json');
+        var subset = util.getSubset(stops, page, pageSize);
         if (lat && lon && radius) {
             resolve({
                 'success': true,
                 'message': 'OK',
-                'data': require('./mockdata/dummy_stops.json')
+                'data': subset
             });
         }
         else {
@@ -32,9 +33,11 @@ exports.getStops = function(req) {
             });
         }
     });
-}
+};
 
-exports.getPredictions = function(req) {
+exports.getStops = getStops;
+
+var getPredictions = function(req) {
     var route = req.query.route;
     var stop = req.query.stop;
 
@@ -43,7 +46,7 @@ exports.getPredictions = function(req) {
             resolve({
                 'success': true,
                 'message': 'OK',
-                'data': [7, 16]
+                'data': require('./mockdata/predictions.json')
             });
         }
         else {
@@ -55,3 +58,5 @@ exports.getPredictions = function(req) {
         }
     });
 };
+
+exports.getPredictions = getPredictions;

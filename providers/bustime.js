@@ -158,7 +158,7 @@ var fetchPredictions = function(route, stop) {
             var predictions = [];
             for (var i=0;i<response.prd.length;i++) {
                 var eta = parseETA(response.prd[i].prdtm);
-                var myPrediction = {'eta' : eta, isoDateString : eta !== null ? eta.toISOString() : ''};
+                var myPrediction = {'eta' : eta !== null ? eta.toISOString() : ''};
                 predictions.push(myPrediction);
             }
             resolve(predictions);
@@ -238,7 +238,7 @@ exports.isInBoundingBox = isInBoundingBox;
 
 //// Loading Routines ////
 
-var timeout = 20; // minutes to cache data
+var expirationPeriod = 60; // minutes to cache data
 var filename = './data.json'; // where to store the data
 var database;
 
@@ -331,7 +331,7 @@ var loadFileData = function() {
                     if (!err) {
                         var data = JSON.parse(filedata);
                         var lastUpdate = Date.parse(data.lastUpdate);
-                        if (isDateAfterMinutesAgo(lastUpdate, timeout)) {
+                        if (isDateAfterMinutesAgo(lastUpdate, expirationPeriod)) {
                             database = data;
                             resolve(data);
                         }
@@ -351,46 +351,66 @@ var loadFileData = function() {
     });
 };
 
+var isDataCurrent = function() {
+    var lastUpdate = database !== undefined ? Date.parse(database.lastUpdate) : null;
+    return lastUpdate && isDateAfterMinutesAgo(lastUpdate, expirationPeriod);
+};
+
+var hasStops = function() {
+    return database !== undefined && database.stops !== undefined && database.stops.length !== undefined;
+};
+
+var isLoadingData;
+
 var loadData = function() {
-    if (database !== undefined) {
-        var lastUpdate = Date.parse(database.lastUpdate);
-        if (isDateAfterMinutesAgo(lastUpdate, timeout)) {
-            return when.resolve(database);
-        }
+    if (isDataCurrent()) {
+        return when.resolve(database);
     }
+    
+    if (isLoadingData) {
+        return when.reject("Data is already loading");
+    }
+    
+    isLoadingData = true;
 
     return loadFileData().then(function(data) {
         if (data) {
+            isLoadingData = false;
             return when.resolve(data);
         }
         else {
             return gatherAllData().then(function(data) {
                 // write the data out to a file to reuse while the data is still fresh (lastUpdated)
-                fs.writeFile(filename, JSON.stringify(data, null, 4), function(err) {
-                    if (err) {
-                        console.log('Error writing out JSON data: ' + err);
+                fs.writeFile(filename, JSON.stringify(data, null, 4), function(error) {
+                    if (error) {
+                        console.log('Error writing out JSON data: ' + error);
                     }
                 });
+                isLoadingData = false;
                 return when.resolve(data);
             });
         }
     });
 };
 
+exports.isDataCurrent = isDataCurrent;
 exports.loadData = loadData;
 
 var lookupStops = function(latitude, longitude, radius) {
     var box = getBoundingBox(latitude, longitude, radius);
     var location = { latitude: latitude, longitude: longitude };
     var matches = [];
-    var stops = database.stops;
-    var keys = Object.keys(stops);
+    
+    var keys = Object.keys(database.stops);
     for (var s=0;s<keys.length;s++) {
-        var stop = stops[keys[s]];
+        var stop = database.stops[keys[s]];
         if (isInBoundingBox(stop.latitude, stop.longitude, box)) {
             var distance = haversine(location, stop);
             // Note: distance is kilometers
             if (distance < radius) {
+                // do not modify source data
+                var copy = stop;
+                copy.stopId = keys[s];
                 matches.push(stop);
             }
         }

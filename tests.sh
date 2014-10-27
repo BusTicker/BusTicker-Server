@@ -8,4 +8,3 @@ node tests.js --provider=mcts --apikey=API-KEY --baseurl="http://realtime.ridemc
 # debug with node-inspector (set Chrome as default browser)
 # npm install node-inspector -g
 # node-debug tests.js --provider=mcts --apikey=API-KEY --baseurl="http://realtime.ridemcts.com/bustime/api/v2/"
-

@@ -1,85 +1,71 @@
 
 var when = require('when');
 var bustime = require('./bustime');
+var util = require('./util');
 
-var isDataReady = false;
-
-exports.processArgs = function(args) {
+var processArgs = function(args) {
     bustime.setProvider(args.provider);
     bustime.setBaseUrl(args.baseurl);
     bustime.setApiKey(args.apikey);
 };
 
-exports.prepareData = function() {
-    return when.promise(function(resolve, reject) {
-        bustime.loadData().then(function(data) {
-            console.log("Data is ready");
-            isDataReady = true;
-            resolve();
-        }).catch(function(error){
-            console.log('Error: ' + error);
-            reject(error);
-        });
-    });
-};
+exports.processArgs = processArgs;
 
-exports.getStops = function(req) {
-    if (!isDataReady) {
-        return when.reject('Data is not ready');
+var getStops = function(req) {
+    if (!bustime.isDataCurrent()) {
+        return bustime.loadData().then(function() {
+            return getStops(req);
+        });
     }
-    
+
     var lat = req.query.lat;
     var lon = req.query.lon;
     var radius = req.query.radius; // expected unit is kilometers
-    var page = req.query.page || 1;
-    var pageSize = req.query.pageSize || 20;
+    var page = parseInt(req.query.page, 10) || 1;
+    var pageSize = parseInt(req.query.pageSize, 10) || 20;
 
     return when.promise(function(resolve, reject) {
         if (lat && lon && radius) {
             bustime.lookupStops(lat, lon, radius).then(function(stops) {
+                var subset = util.getSubset(stops, page, pageSize);
+                
                 resolve({
                     'success': true,
                     'message': 'OK',
-                    'data': stops
+                    'data': subset
                 });
+            }, function(error) {
+                reject(error);
             });
         }
         else {
-            reject({
-                'success': false,
-                'message': 'Bad request. Make sure you have a latitude, longitude and radius on the query string.',
-                'data': {}
-            });
+            reject("Bad request. Make sure you have a latitude, longitude and radius on the query string.");
         }
     });
 };
 
-exports.getPredictions = function(req) {
+exports.getStops = getStops;
+
+var getPredictions = function(req) {
     var route = req.query.route;
     var stop = req.query.stop;
     
     return when.promise(function(resolve, reject) {
         if (route && stop) {
-            bustime.fetchPredictions(route, stop).then(function(result) {
+            bustime.fetchPredictions(route, stop).then(function(predictions) {
                 resolve({
                     'success': true,
                     'message': 'OK',
-                    'data': result
+                    'data': predictions
                 });
             }, function(error) {
-                reject({
-                    'success': false,
-                    'message': 'Bad request. Make sure you have a route and a stop ID on the query string.',
-                    'data': {}
-                });
+                reject("Bad request. Make sure you have a route and a stop ID on the query string.");
             });
         }
         else {
-            reject({
-                'success': false,
-                'message': 'Bad request. Make sure you have a route and a stop ID on the query string.',
-                'data': {}
-            });
+            reject("Bad request. Make sure you have a route and a stop ID on the query string.");
         }
     });
 };
+
+exports.getPredictions = getPredictions;

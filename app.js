@@ -18,8 +18,6 @@ parser.addArgument([ '-k', '--apikey' ], { help: 'api key'});
 
 var args = parser.parseArgs();
 
-console.log(args);
-
 var provider;
 if (args.provider === 'mock') {
     provider = require('./providers/mock');
@@ -34,25 +32,29 @@ else {
 provider.processArgs(args);
 
 var logger = require('morgan');
-app.use(logger(args.provider));
+app.use(logger('Provider: ' + args.provider));
+
+var getErrorResponse = function(error) {
+    return {
+        'success': false,
+        'message': error ? error : "Error!",
+        'data': {}
+    };
+};
 
 app.get('/predictions', function(req, res) {
     provider.getPredictions(req).then(function(response) {
-        console.log('success: ' + response);
         res.send(response);
-    }, function(response) {
-        console.log('fail: ' + response);
-        res.send(response);
+    }, function(error) {
+        res.send(getErrorResponse(error));
     });
 });
 
 app.get('/stops', function(req, res) {
     provider.getStops(req).then(function(response) {
-        console.log('success: ' + response);
         res.send(response);
-    }, function(response) {
-        console.log('fail: ' + response);
-        res.send(response);
+    }, function(error) {
+        res.send(getErrorResponse(error));
     });
 });
 
