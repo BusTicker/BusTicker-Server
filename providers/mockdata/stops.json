@@ -1,0 +1,178 @@
+[
+    {
+      "name": "HUMBOLDT + LYON",
+      "latitude": 43.049462579534,
+      "longitude": -87.898241822089,
+      "routeId": "10",
+      "direction": "WEST",
+      "stopId": "464"
+    },
+    {
+      "name": "MILWAUKEE + OGDEN",
+      "latitude": 43.048020444146,
+      "longitude": -87.907242293649,
+      "routeId": "15",
+      "direction": "NORTH",
+      "stopId": "1235"
+    },
+    {
+      "name": "OGDEN + JEFFERSON",
+      "latitude": 43.048132908715,
+      "longitude": -87.906252395502,
+      "routeId": "15",
+      "direction": "NORTH",
+      "stopId": "1236"
+    },
+    {
+      "name": "OGDEN + JACKSON",
+      "latitude": 43.048128002675,
+      "longitude": -87.904912031086,
+      "routeId": "15",
+      "direction": "NORTH",
+      "stopId": "1237"
+    },
+    {
+      "name": "VAN BUREN + LYON",
+      "latitude": 43.049244951198,
+      "longitude": -87.903396666668,
+      "routeId": "15",
+      "direction": "NORTH",
+      "stopId": "1238"
+    },
+    {
+      "name": "VAN BUREN + PLEASANT",
+      "latitude": 43.050460444356,
+      "longitude": -87.903363906745,
+      "routeId": "15",
+      "direction": "NORTH",
+      "stopId": "1239"
+    },
+    {
+      "name": "HOLTON + RESERVOIR - GLOVER",
+      "latitude": 43.055753284259,
+      "longitude": -87.905319999999,
+      "routeId": "15",
+      "direction": "NORTH",
+      "stopId": "1241"
+    },
+    {
+      "name": "HOLTON + LLOYD",
+      "latitude": 43.057637605762,
+      "longitude": -87.905292604499,
+      "routeId": "15",
+      "direction": "NORTH",
+      "stopId": "1242"
+    },
+    {
+      "name": "WATER STREET + PLEASANT",
+      "latitude": 43.050608003999,
+      "longitude": -87.906262604498,
+      "routeId": "GRE",
+      "direction": "NORTH",
+      "stopId": "1323"
+    },
+    {
+      "name": "HOLTON + BRADY",
+      "latitude": 43.053278377347,
+      "longitude": -87.903306511242,
+      "routeId": "15",
+      "direction": "NORTH",
+      "stopId": "1325"
+    },
+    {
+      "name": "BRADY + HUMBOLDT",
+      "latitude": 43.052916925134,
+      "longitude": -87.898299791006,
+      "routeId": "GRE",
+      "direction": "NORTH",
+      "stopId": "1327"
+    },
+    {
+      "name": "BRADY + ARLINGTON",
+      "latitude": 43.05291661771,
+      "longitude": -87.895576666667,
+      "routeId": "GRE",
+      "direction": "NORTH",
+      "stopId": "1328"
+    },
+    {
+      "name": "BRADY + VAN BUREN - HOLTON",
+      "latitude": 43.052959857997,
+      "longitude": -87.903554999999,
+      "routeId": "GRE",
+      "direction": "NORTH",
+      "stopId": "1971"
+    },
+    {
+      "name": "VAN BUREN + OGDEN",
+      "latitude": 43.048027791689,
+      "longitude": -87.903428853174,
+      "routeId": "30",
+      "direction": "EAST",
+      "stopId": "4355"
+    },
+    {
+      "name": "OGDEN + MARSHALL",
+      "latitude": 43.048092720755,
+      "longitude": -87.901128697751,
+      "routeId": "30",
+      "direction": "EAST",
+      "stopId": "4356"
+    },
+    {
+      "name": "OGDEN + ASTOR",
+      "latitude": 43.048085068259,
+      "longitude": -87.899162968915,
+      "routeId": "30",
+      "direction": "EAST",
+      "stopId": "4357"
+    },
+    {
+      "name": "HUMBOLDT + WATER STREET - KANE",
+      "latitude": 43.0562728827,
+      "longitude": -87.898060417989,
+      "routeId": "10",
+      "direction": "WEST",
+      "stopId": "4540"
+    },
+    {
+      "name": "HUMBOLDT + HAMILTON",
+      "latitude": 43.054505630199,
+      "longitude": -87.898119999999,
+      "routeId": "10",
+      "direction": "WEST",
+      "stopId": "4541"
+    },
+    {
+      "name": "HUMBOLDT + BRADY",
+      "latitude": 43.053054056995,
+      "longitude": -87.89816775992,
+      "routeId": "10",
+      "direction": "WEST",
+      "stopId": "4542"
+    },
+    {
+      "name": "HUMBOLDT + PLEASANT",
+      "latitude": 43.050622884742,
+      "longitude": -87.898209062171,
+      "routeId": "10",
+      "direction": "WEST",
+      "stopId": "4543"
+    },
+    {
+      "name": "HUMBOLDT + OGDEN",
+      "latitude": 43.048243472477,
+      "longitude": -87.898290675263,
+      "routeId": "10",
+      "direction": "WEST",
+      "stopId": "4544"
+    },
+    {
+      "name": "OGDEN + ASTOR",
+      "latitude": 43.048139951245,
+      "longitude": -87.899406666665,
+      "routeId": "10",
+      "direction": "WEST",
+      "stopId": "4545"
+    }
+]
