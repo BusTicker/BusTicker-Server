@@ -58,6 +58,7 @@ app.get('/stops', function(req, res) {
     });
 });
 
-var server = app.listen(app.get('port'), function() {
-    console.log('Server started.\nListening on port %d', server.address().port);
+var server = app.listen(app.get('port'), 'localhost', function() {
+    var address = server.address();
+    console.log('Server started.\nListening on %s on port %d', address.address, address.port);
 });
