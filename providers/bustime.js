@@ -76,7 +76,7 @@ var setProvider = function(p) {
 };
 
 var setBaseUrl = function(url) {
-    if (url.length > 0) {
+    if (url != null && url.length > 0) {
         baseUrl = url;
     }
 };
@@ -353,7 +353,8 @@ var loadFileData = function() {
 
 var isDataCurrent = function() {
     var lastUpdate = database !== undefined ? Date.parse(database.lastUpdate) : null;
-    return lastUpdate && isDateAfterMinutesAgo(lastUpdate, expirationPeriod);
+    var result = lastUpdate != null && isDateAfterMinutesAgo(lastUpdate, expirationPeriod);
+    return result;
 };
 
 var hasStops = function() {

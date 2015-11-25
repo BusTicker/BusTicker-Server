@@ -1,0 +1,59 @@
+{
+	"version": "0.3.0",
+	"configurations": [
+		{
+			"name": "Launch app.js (mcts)",
+			"type": "node",
+			"request": "launch",
+			"program": "app.js",
+			"stopOnEntry": false,
+			"args": [
+				"--apikey=KEY", 
+				"--baseurl=http://realtime.ridemcts.com/bustime/api/v2/", 
+				"--provider=mcts"
+				],
+			"cwd": ".",
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development",
+				"PORT": "8005"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+		{
+			"name": "Launch app.js (mock)",
+			"type": "node",
+			"request": "launch",
+			"program": "app.js",
+			"stopOnEntry": false,
+			"args": [
+				"--apikey=KEY", 
+				"--baseurl=http://realtime.ridemcts.com/bustime/api/v2/", 
+				"--provider=mock"
+				],
+			"cwd": ".",
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development",
+				"PORT": "8005"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+		{
+			"name": "Attach",
+			"type": "node",
+			"request": "attach",
+			"port": 5858
+		}
+	]
+}

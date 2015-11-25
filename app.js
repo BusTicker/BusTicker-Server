@@ -4,7 +4,7 @@ var app = express();
 var ArgumentParser = require('argparse').ArgumentParser;
 
 // Configure app properties
-app.set('port', process.env.PORT || process.env.npm_package_config_port || 3000);
+app.set('port', process.env.PORT  || 3000);
 
 var parser = new ArgumentParser({
     version: '1.0.0',
